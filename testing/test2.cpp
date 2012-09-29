@@ -10,14 +10,11 @@
 
 extern "C" {
 #include "CircularBuffer.h"
-//#include "RuntimeError.h"
 //#include "RuntimeErrorStub.h"
 }
 
 TEST_GROUP(CircularBuffer0)
 {
-    int value;
-
     void setup(void)
     {
         CircularBuffer_Create(0);
@@ -47,7 +44,8 @@ TEST(CircularBuffer0, PushAlwaysFails)
 
 TEST(CircularBuffer0, PopAlwaysFails)
 {
-    CHECK_FALSE(CircularBuffer_Pop(&value));
+    int discard;
+    CHECK_FALSE(CircularBuffer_Pop(&discard));
     CHECK_EQUAL(0, CircularBuffer_GetSize());
 }
 
@@ -100,10 +98,10 @@ TEST(CircularBuffer1, PopOnFilledBufferOk)
 TEST(CircularBuffer1, PushAndPopElementCorrect)
 {
     const int n = 42;
-    value = -1;
     CHECK_TRUE(CircularBuffer_Push(n));
     CHECK_EQUAL(1, CircularBuffer_GetSize());
 
+    value = -1;
     CHECK_TRUE(CircularBuffer_Pop(&value));
     CHECK_EQUAL(0, CircularBuffer_GetSize());
     CHECK_EQUAL(n, value);
@@ -169,6 +167,14 @@ TEST(CircularBufferN, ExceedCapacityFail)
     CHECK_EQUAL(capacity, CircularBuffer_GetSize());
 }
 
+TEST(CircularBufferN, PopOnEmptyBufferDoesNotAffectSize)
+{
+    CHECK_TRUE(CircularBuffer_IsEmpty());
+
+    CHECK_FALSE(CircularBuffer_Pop(&discard));
+    CHECK_EQUAL(0, CircularBuffer_GetSize());
+}
+
 TEST(CircularBufferN, PushAndPopTwoCorrectValues)
 {
     CHECK_TRUE(CircularBuffer_Push(1));
@@ -184,11 +190,10 @@ TEST(CircularBufferN, PushAndPopTwoCorrectValues)
 TEST(CircularBufferN, FailedPopDoesNotCorruptValue)
 {
     const int n = 42;
-    {
-        discard = 7;
-        CHECK_TRUE(CircularBuffer_Push(discard));
-        CHECK_TRUE(CircularBuffer_Pop(&discard));
-    }
+
+    discard = 7;
+    CHECK_TRUE(CircularBuffer_Push(discard));
+    CHECK_TRUE(CircularBuffer_Pop(&discard));
     
     value = n;
     CHECK_FALSE(CircularBuffer_Pop(&value));
@@ -213,9 +218,11 @@ TEST(CircularBufferN, OnlyZeroSizedBufferIsEmpty)
 
 TEST_GROUP(CircularBufferInvariant)
 {
+    void tearDown(void)
+    {
+        CircularBuffer_Destroy();
+    }
 };
-
-// Remove too many elements, post-cond: size >= 0
 
 TEST(CircularBufferInvariant, NegativeCapacityFail)
 {
