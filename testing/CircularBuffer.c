@@ -7,104 +7,122 @@
 //
 
 #include "CircularBuffer.h"
+
+#include <stdlib.h>
 #include <assert.h>
 
-static struct {
+/*
+ #include <MemoryLeakDetectorMallocMacros.h>
+ */
+
+struct CircularBufferStruct {
     int capacity;
     int size;
     int element[MAX_CAPACITY];
     int inPointer;
     int outPointer;
-} mgmt;
+};
 
-static Bool isBufferEmpty(void)
+static const struct CircularBufferStruct resetStruct;
+
+static Bool isBufferEmpty(CircularBuffer cb)
 {
-    return (mgmt.size == 0);
+    return (cb->size == 0);
 }
 
-static Bool isBufferFull(void)
+static Bool isBufferFull(CircularBuffer cb)
 {
-    return (mgmt.size == mgmt.capacity);
+    return (cb->size == cb->capacity);
 }
 
-static void setInElement(const int value)
+static void setInElement(CircularBuffer cb, const int value)
 {
-    mgmt.element[mgmt.inPointer] = value;
+    cb->element[cb->inPointer] = value;
 }
 
-static int getOutElement(void)
+static int getOutElement(CircularBuffer cb)
 {
-    return mgmt.element[mgmt.outPointer];
+    return cb->element[cb->outPointer];
 }
 
-static void advanceInPointer(void)
+static void advanceInPointer(CircularBuffer cb)
 {
-    mgmt.inPointer++;
-    mgmt.inPointer %= mgmt.capacity;
-    mgmt.size++;
+    cb->inPointer++;
+    cb->inPointer %= cb->capacity;
+    cb->size++;
 }
 
-static void advanceOutPointer(void)
+static void advanceOutPointer(CircularBuffer cb)
 {
-    mgmt.outPointer++;
-    mgmt.outPointer %= mgmt.capacity;
-    mgmt.size--;
+    cb->outPointer++;
+    cb->outPointer %= cb->capacity;
+    cb->size--;
 }
 
 
-Bool CircularBuffer_Create(int capacity)
+CircularBuffer CircularBuffer_Create(int capacity)
 {
+    CircularBuffer cb = NULL;
+
     if(capacity < 0)
-        return FALSE;
+        return NULL;
     
     assert(capacity <= MAX_CAPACITY);
     
-    mgmt.capacity = capacity;
-    mgmt.size = 0;
-    mgmt.inPointer = 0;
-    mgmt.outPointer = 0;
+    cb = malloc(sizeof(struct CircularBufferStruct));
+    
+    if(cb != NULL)
+    {
+        *cb = resetStruct;
+        cb->capacity = capacity;
+    }
+        
+    return cb;
+}
+
+int CircularBuffer_GetSize(CircularBuffer cb)
+{
+    return cb->size;
+}
+
+int CircularBuffer_GetCapacity(CircularBuffer cb)
+{
+    return cb->capacity;
+}
+
+Bool CircularBuffer_IsEmpty(CircularBuffer cb)
+{
+    return isBufferEmpty(cb);
+}
+
+Bool CircularBuffer_Push(CircularBuffer cb, const int value)
+{
+    if(isBufferFull(cb))
+        return FALSE;
+    
+    setInElement(cb, value);
+    advanceInPointer(cb);
     return TRUE;
 }
 
-int CircularBuffer_GetSize(void)
+Bool CircularBuffer_Pop(CircularBuffer cb, int * const value)
 {
-    return mgmt.size;
-}
-
-int CircularBuffer_GetCapacity(void)
-{
-    return mgmt.capacity;
-}
-
-Bool CircularBuffer_IsEmpty(void)
-{
-    return isBufferEmpty();
-}
-
-Bool CircularBuffer_Push(const int value)
-{
-    if(isBufferFull())
+    if(value == NULL)
         return FALSE;
     
-    setInElement(value);
-    advanceInPointer();
+    if(isBufferEmpty(cb))
+        return FALSE;
+    
+    *value = getOutElement(cb);
+    advanceOutPointer(cb);
     return TRUE;
 }
 
-Bool CircularBuffer_Pop(int * const value)
+void CircularBuffer_Destroy(CircularBuffer cb)
 {
-    if(value == 0)
-        return FALSE;
-    
-    if(isBufferEmpty())
-        return FALSE;
-    
-    *value = getOutElement();
-    advanceOutPointer();
-    return TRUE;
-}
-
-void CircularBuffer_Destroy(void)
-{
-    
+    if(cb != NULL)
+    {
+        *cb = resetStruct;
+        free(cb);
+    }
 }
