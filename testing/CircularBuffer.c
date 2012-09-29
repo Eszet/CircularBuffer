@@ -8,20 +8,66 @@
 
 #include "CircularBuffer.h"
 
+enum { MAX_CAPACITY = 10 };
+
 static struct {
     int capacity;
     int size;
-    int element;
-} mgmt = {
-    0, /* capacity */
-    0, /* size */
-    0  /* element */
-};
+    int element[MAX_CAPACITY];
+    int inPointer;
+    int outPointer;
+} mgmt;
 
-void CircularBuffer_Create(int capacity)
+static Bool isBufferEmpty(void)
 {
+    return (mgmt.size == 0);
+}
+
+static Bool isBufferFull(void)
+{
+    return (mgmt.size == mgmt.capacity);
+}
+
+static void setInElement(const int value)
+{
+    mgmt.element[mgmt.inPointer] = value;
+}
+
+static int getOutElement(void)
+{
+    return mgmt.element[mgmt.outPointer];
+}
+
+static void advanceInPointer(void)
+{
+    mgmt.inPointer++;
+    mgmt.inPointer %= mgmt.capacity;
+    mgmt.size++;
+}
+
+static void advanceOutPointer(void)
+{
+    mgmt.outPointer++;
+    mgmt.outPointer %= mgmt.capacity;
+    mgmt.size--;
+}
+
+
+Bool CircularBuffer_Create(int capacity)
+{
+    if(capacity < 0)
+        return FALSE;
+    
+    /*
+     if(capacity > MAX_CAPACITY)
+     return FALSE;
+     */
+    
     mgmt.capacity = capacity;
     mgmt.size = 0;
+    mgmt.inPointer = 0;
+    mgmt.outPointer = 0;
+    return TRUE;
 }
 
 int CircularBuffer_GetSize(void)
@@ -34,13 +80,18 @@ int CircularBuffer_GetCapacity(void)
     return mgmt.capacity;
 }
 
+Bool CircularBuffer_IsEmpty(void)
+{
+    return isBufferEmpty();
+}
+
 Bool CircularBuffer_Push(const int value)
 {
-    if(mgmt.size == mgmt.capacity)
+    if(isBufferFull())
         return FALSE;
     
-    mgmt.element = value;
-    mgmt.size++;
+    setInElement(value);
+    advanceInPointer();
     return TRUE;
 }
 
@@ -49,11 +100,11 @@ Bool CircularBuffer_Pop(int * const value)
     if(value == 0)
         return FALSE;
     
-    if(mgmt.size == 0)
+    if(isBufferEmpty())
         return FALSE;
     
-    *value = mgmt.element;
-    mgmt.size--;
+    *value = getOutElement();
+    advanceOutPointer();
     return TRUE;
 }
 

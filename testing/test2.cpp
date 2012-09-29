@@ -29,27 +29,28 @@ TEST_GROUP(CircularBuffer0)
     }
 };
 
-TEST(CircularBuffer0, NewBufferIsEmpty)
+TEST(CircularBuffer0, AlwaysEmpty)
 {
     CHECK_EQUAL(0, CircularBuffer_GetSize());
 }
 
-TEST(CircularBuffer0, NewBufferCapacity)
+TEST(CircularBuffer0, ZeroCapacity)
 {
     CHECK_EQUAL(0, CircularBuffer_GetCapacity());
 }
 
-TEST(CircularBuffer0, CapZeroBufferPushFail)
+TEST(CircularBuffer0, PushAlwaysFails)
 {
     CHECK_FALSE(CircularBuffer_Push(1));
     CHECK_EQUAL(0, CircularBuffer_GetSize());
 }
 
-TEST(CircularBuffer0, CapZeroBufferPopFail)
+TEST(CircularBuffer0, PopAlwaysFails)
 {
     CHECK_FALSE(CircularBuffer_Pop(&value));
     CHECK_EQUAL(0, CircularBuffer_GetSize());
 }
+
 
 TEST_GROUP(CircularBuffer1)
 {
@@ -128,4 +129,94 @@ TEST(CircularBuffer1, NoOperationOnInvalidRef)
     CHECK_TRUE(CircularBuffer_Push(0));
     CHECK_FALSE(CircularBuffer_Pop(null));
     CHECK_EQUAL(1, CircularBuffer_GetSize());
+}
+
+TEST_GROUP(CircularBufferN)
+{
+    const int capacity = 5;
+    int discard;
+    
+    int addSomeElements(const int count, const int offset = 111)
+    {
+        int successful = 0;
+
+        for(int i = 0; i < count; i++)
+            if(CircularBuffer_Push(i+offset))
+                successful++;
+        
+        return successful;
+    }
+    
+    void setup(void)
+    {
+        CHECK_TRUE(CircularBuffer_Create(capacity));
+    }
+    
+    void tearDown(void)
+    {
+        CircularBuffer_Destroy();
+    }
+};
+
+
+TEST(CircularBufferN, ExceedCapacityFail)
+{
+    CHECK_EQUAL(capacity, addSomeElements(capacity));
+    CHECK_EQUAL(0, addSomeElements(capacity));
+
+    CHECK_EQUAL(capacity, CircularBuffer_GetSize());
+}
+
+TEST(CircularBufferN, PushAndPopTwoCorrectValues)
+{
+    CHECK_TRUE(CircularBuffer_Push(1));
+    CHECK_TRUE(CircularBuffer_Push(2));
+    
+    discard = 17;
+    CHECK_TRUE(CircularBuffer_Pop(&discard));
+    CHECK_EQUAL(1, discard);
+    CHECK_TRUE(CircularBuffer_Pop(&discard));
+    CHECK_EQUAL(2, discard);
+}
+
+TEST(CircularBufferN, FailedPopDoesNotCorruptValue)
+{
+    const int n = 42;
+    {
+        discard = 7;
+        CHECK_TRUE(CircularBuffer_Push(discard));
+        CHECK_TRUE(CircularBuffer_Pop(&discard));
+    }
+    
+    discard = n;
+    CHECK_FALSE(CircularBuffer_Pop(&discard));
+    CHECK_EQUAL(n, discard);
+}
+
+TEST(CircularBufferN, OnlyZeroSizedBufferIsEmpty)
+{
+    CHECK_EQUAL(2, addSomeElements(2));
+
+    CHECK_EQUAL(2, CircularBuffer_GetSize());
+    CHECK_FALSE(CircularBuffer_IsEmpty());
+
+    CHECK_TRUE(CircularBuffer_Pop(&discard));
+    CHECK_EQUAL(1, CircularBuffer_GetSize());
+    CHECK_FALSE(CircularBuffer_IsEmpty());
+
+    CHECK_TRUE(CircularBuffer_Pop(&discard));
+    CHECK_EQUAL(0, CircularBuffer_GetSize());
+    CHECK_TRUE(CircularBuffer_IsEmpty());
+}
+
+TEST_GROUP(CircularBufferInvariant)
+{
+};
+
+// Remove too many elements, post-cond: size >= 0
+
+TEST(CircularBufferInvariant, NegativeCapacityFail)
+{
+    CHECK_FALSE(CircularBuffer_Create(-1));
+    CHECK_FALSE(CircularBuffer_Create(-137));
 }
