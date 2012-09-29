@@ -10,8 +10,8 @@
 
 extern "C" {
 #include "CircularBuffer.h"
-#include "RuntimeError.h"
-#include "RuntimeErrorStub.h"
+//#include "RuntimeError.h"
+//#include "RuntimeErrorStub.h"
 }
 
 TEST_GROUP(CircularBuffer0)
@@ -54,7 +54,7 @@ TEST(CircularBuffer0, PopAlwaysFails)
 
 TEST_GROUP(CircularBuffer1)
 {
-    int value;
+    int value, discard;
 
     void setup(void)
     {
@@ -134,7 +134,7 @@ TEST(CircularBuffer1, NoOperationOnInvalidRef)
 TEST_GROUP(CircularBufferN)
 {
     const int capacity = 5;
-    int discard;
+    int value, discard;
     
     int addSomeElements(const int count, const int offset = 111)
     {
@@ -149,7 +149,9 @@ TEST_GROUP(CircularBufferN)
     
     void setup(void)
     {
-        CHECK_TRUE(CircularBuffer_Create(capacity));
+        // CircularBufferInvariant makes sure positive capacity
+        // values return successfully.
+        CircularBuffer_Create(capacity);
     }
     
     void tearDown(void)
@@ -172,11 +174,11 @@ TEST(CircularBufferN, PushAndPopTwoCorrectValues)
     CHECK_TRUE(CircularBuffer_Push(1));
     CHECK_TRUE(CircularBuffer_Push(2));
     
-    discard = 17;
-    CHECK_TRUE(CircularBuffer_Pop(&discard));
-    CHECK_EQUAL(1, discard);
-    CHECK_TRUE(CircularBuffer_Pop(&discard));
-    CHECK_EQUAL(2, discard);
+    value = 17;
+    CHECK_TRUE(CircularBuffer_Pop(&value));
+    CHECK_EQUAL(1, value);
+    CHECK_TRUE(CircularBuffer_Pop(&value));
+    CHECK_EQUAL(2, value);
 }
 
 TEST(CircularBufferN, FailedPopDoesNotCorruptValue)
@@ -188,9 +190,9 @@ TEST(CircularBufferN, FailedPopDoesNotCorruptValue)
         CHECK_TRUE(CircularBuffer_Pop(&discard));
     }
     
-    discard = n;
-    CHECK_FALSE(CircularBuffer_Pop(&discard));
-    CHECK_EQUAL(n, discard);
+    value = n;
+    CHECK_FALSE(CircularBuffer_Pop(&value));
+    CHECK_EQUAL(n, value);
 }
 
 TEST(CircularBufferN, OnlyZeroSizedBufferIsEmpty)
@@ -219,4 +221,9 @@ TEST(CircularBufferInvariant, NegativeCapacityFail)
 {
     CHECK_FALSE(CircularBuffer_Create(-1));
     CHECK_FALSE(CircularBuffer_Create(-137));
+}
+
+TEST(CircularBufferInvariant, PositiveCapacityOk)
+{
+    CHECK_TRUE(CircularBuffer_Create(10));
 }

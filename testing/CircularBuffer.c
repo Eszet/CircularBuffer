@@ -7,8 +7,7 @@
 //
 
 #include "CircularBuffer.h"
-
-enum { MAX_CAPACITY = 10 };
+#include <assert.h>
 
 static struct {
     int capacity;
@@ -58,10 +57,7 @@ Bool CircularBuffer_Create(int capacity)
     if(capacity < 0)
         return FALSE;
     
-    /*
-     if(capacity > MAX_CAPACITY)
-     return FALSE;
-     */
+    assert(capacity <= MAX_CAPACITY);
     
     mgmt.capacity = capacity;
     mgmt.size = 0;

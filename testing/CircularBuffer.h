@@ -10,6 +10,9 @@
 #define testing_CircularBuffer_h
 
 typedef enum { FALSE = 0, TRUE = 1 } Bool;
+
+enum { MAX_CAPACITY = 10 };
+
 typedef struct CircularBufferStruct * CircularBuffer;
 
 Bool CircularBuffer_Create(int capacity);
