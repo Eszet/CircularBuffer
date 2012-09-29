@@ -270,9 +270,14 @@ IGNORE_TEST(CircularBufferInvariant, ApiIsSafeAgainstNull)
     // At this point we have not created a CircularBuffer yet;
     // let's check all calls to the API.
 
+    // At the moment, behavior of the API for NULL input is undefined.
+    // CircularBuffer_Destroy is covered by tearDown
+    
     CircularBuffer_GetSize(NULL);
+    CircularBuffer_GetCapacity(NULL);
+    CircularBuffer_IsEmpty(NULL);
     
-    
-    
+    CircularBuffer_Push(NULL, 0);
+    CircularBuffer_Pop(NULL, NULL);
 }
 
