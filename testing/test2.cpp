@@ -139,19 +139,63 @@ TEST_GROUP(CircularBufferN)
 
     int value, discard;
     
-    int addSomeElements(const int count, const int offset = 111)
-    {
-        int successful = 0;
+    enum fifoState { HALF_FULL, FULL, OVER_FULL, HALF_EMPTY, EMPTY, OVER_EMPTY };
 
-        for(int i = 0; i < count; i++)
-            if(CircularBuffer_Push(cb, i + offset))
-                successful++;
+    int makeFifo(CircularBuffer cb, const fifoState state, const int offset = 888)
+    {
+        int count, targetSize;
+
+        if(state < HALF_EMPTY)
+        {
+            targetSize = CircularBuffer_GetCapacity(cb);
+            
+            if(state == HALF_FULL)
+                targetSize /= 2;
+            
+            for(count = 0; CircularBuffer_GetSize(cb) < targetSize; count++)
+                CHECK_TRUE(CircularBuffer_Push(cb, count + offset));
+            
+            if(state == OVER_FULL)
+            {
+                targetSize = CircularBuffer_GetCapacity(cb) / 2;
+
+                for(count = 0; count < targetSize; count++)
+                    CHECK_FALSE(CircularBuffer_Push(cb, count));
+                
+                return targetSize;
+            }
+        }
+        else if(state > OVER_FULL)
+        {
+            targetSize = CircularBuffer_GetCapacity(cb) / 2;
+            
+            if(state == EMPTY || state == OVER_EMPTY)
+                targetSize = 0;
+            
+            for(count = 0; CircularBuffer_GetSize(cb) > targetSize; count++)
+            {
+                int value = -1;
+                CHECK_TRUE(CircularBuffer_Pop(cb, &value));
+                CHECK_EQUAL(count + offset, value);
+            }
+            
+            if(state == OVER_EMPTY)
+            {
+                targetSize = CircularBuffer_GetCapacity(cb) / 2;
+
+                for(count = 0; count < targetSize; count++)
+                    CHECK_FALSE(CircularBuffer_Pop(cb, &discard));
+
+                return targetSize;
+            }
+        }
         
-        return successful;
+        return count;
     }
     
     void setup(void)
     {
+        CHECK_TRUE(capacity > 1);
         cb = CircularBuffer_Create(capacity);
     }
     
@@ -164,17 +208,15 @@ TEST_GROUP(CircularBufferN)
 
 TEST(CircularBufferN, ExceedCapacityFail)
 {
-    CHECK_EQUAL(capacity, addSomeElements(capacity));
-    CHECK_EQUAL(0, addSomeElements(capacity));
-
+    CHECK_TRUE(makeFifo(cb, OVER_FULL) > 0);
     CHECK_EQUAL(capacity, CircularBuffer_GetSize(cb));
 }
 
 TEST(CircularBufferN, PopOnEmptyBufferDoesNotAffectSize)
 {
     CHECK_TRUE(CircularBuffer_IsEmpty(cb));
+    CHECK_TRUE(makeFifo(cb, OVER_EMPTY) > 0);
 
-    CHECK_FALSE(CircularBuffer_Pop(cb, &discard));
     CHECK_EQUAL(0, CircularBuffer_GetSize(cb));
 }
 
@@ -205,42 +247,44 @@ TEST(CircularBufferN, FailedPopDoesNotCorruptValue)
 
 TEST(CircularBufferN, OnlyZeroSizedBufferIsEmpty)
 {
-    CHECK_EQUAL(2, addSomeElements(2));
-
-    CHECK_EQUAL(2, CircularBuffer_GetSize(cb));
+    CHECK_TRUE(CircularBuffer_IsEmpty(cb));
+    makeFifo(cb, HALF_FULL);
     CHECK_FALSE(CircularBuffer_IsEmpty(cb));
-
-    CHECK_TRUE(CircularBuffer_Pop(cb, &discard));
-    CHECK_EQUAL(1, CircularBuffer_GetSize(cb));
-    CHECK_FALSE(CircularBuffer_IsEmpty(cb));
-
-    CHECK_TRUE(CircularBuffer_Pop(cb, &discard));
-    CHECK_EQUAL(0, CircularBuffer_GetSize(cb));
+    
+    makeFifo(cb, EMPTY);
     CHECK_TRUE(CircularBuffer_IsEmpty(cb));
 }
 
 TEST(CircularBufferN, MultipleInstances)
 {
     CircularBuffer another = CircularBuffer_Create(4);
-    CircularBuffer_Push(another, 200);
-    CircularBuffer_Push(another, 201);
 
-    addSomeElements(20, 100);
+    makeFifo(another, FULL, 222);
+    makeFifo(cb, FULL, 111);
     
-    int value1 = -1, value2 = -2;
-    CircularBuffer_Pop(cb, &value1);
-    CHECK_EQUAL(100, value1);
-
-    CircularBuffer_Pop(another, &value1);
-    CHECK_EQUAL(200, value1);
-    
-    CircularBuffer_Pop(cb, &value2);
-    CHECK_EQUAL(101, value2);
-    
-    CircularBuffer_Pop(another, &value2);
-    CHECK_EQUAL(201, value2);
+    makeFifo(cb, EMPTY, 111);
+    makeFifo(another, EMPTY, 222);
     
     CircularBuffer_Destroy(another);
+}
+
+TEST(CircularBufferN, PipeDataThrough)
+{
+    int value = 0;
+    int added = 0, removed = 0;
+    
+    while(value < 200)
+    {
+        enum fifoState addOp = HALF_FULL;
+        if(value % 3 == 1) addOp = FULL;
+        if(value % 3 == 2) addOp = OVER_FULL;
+
+        added += makeFifo(cb, addOp, value);
+        removed += makeFifo(cb, EMPTY, value);
+        value += added;
+    }
+    
+    CHECK_TRUE(CircularBuffer_IsEmpty(cb));
 }
 
 
@@ -262,22 +306,21 @@ TEST(CircularBufferInvariant, NegativeCapacityFail)
 
 TEST(CircularBufferInvariant, PositiveCapacityOk)
 {
-    CHECK_TRUE(CircularBuffer_Create(10));
+    CHECK_TRUE(CircularBuffer_Create(100));
 }
 
 IGNORE_TEST(CircularBufferInvariant, ApiIsSafeAgainstNull)
 {
-    // At this point we have not created a CircularBuffer yet;
-    // let's check all calls to the API.
-
     // At the moment, behavior of the API for NULL input is undefined.
     // CircularBuffer_Destroy is covered by tearDown
     
-    CircularBuffer_GetSize(NULL);
-    CircularBuffer_GetCapacity(NULL);
-    CircularBuffer_IsEmpty(NULL);
-    
-    CircularBuffer_Push(NULL, 0);
-    CircularBuffer_Pop(NULL, NULL);
+    cb = NULL;
+    {
+        CircularBuffer_GetSize(cb);
+        CircularBuffer_GetCapacity(cb);
+        CircularBuffer_IsEmpty(cb);
+        
+        CircularBuffer_Push(cb, 0);
+        CircularBuffer_Pop(cb, NULL);
+    }
 }
-

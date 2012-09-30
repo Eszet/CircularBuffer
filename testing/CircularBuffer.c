@@ -11,26 +11,25 @@
 #include <stdlib.h>
 #include <assert.h>
 
-/*
- #include <MemoryLeakDetectorMallocMacros.h>
- */
+//#include <MemoryLeakDetectorMallocMacros.h>
 
 struct CircularBufferStruct {
     int capacity;
     int size;
-    int element[MAX_CAPACITY];
+    int *element;
     int inPointer;
     int outPointer;
 };
 
 static const struct CircularBufferStruct resetStruct;
 
-static Bool isBufferEmpty(CircularBuffer cb)
+
+static Bool isBufferEmpty(const CircularBuffer cb)
 {
     return (cb->size == 0);
 }
 
-static Bool isBufferFull(CircularBuffer cb)
+static Bool isBufferFull(const CircularBuffer cb)
 {
     return (cb->size == cb->capacity);
 }
@@ -67,30 +66,35 @@ CircularBuffer CircularBuffer_Create(int capacity)
     if(capacity < 0)
         return NULL;
     
-    assert(capacity <= MAX_CAPACITY);
-    
     cb = malloc(sizeof(struct CircularBufferStruct));
     
     if(cb != NULL)
     {
         *cb = resetStruct;
+        cb->element = malloc(sizeof(*cb->element) * capacity);
         cb->capacity = capacity;
+        
+        if(cb->element == NULL)
+        {
+            CircularBuffer_Destroy(cb);
+            cb = NULL;
+        }
     }
         
     return cb;
 }
 
-int CircularBuffer_GetSize(CircularBuffer cb)
+int CircularBuffer_GetSize(const CircularBuffer cb)
 {
     return cb->size;
 }
 
-int CircularBuffer_GetCapacity(CircularBuffer cb)
+int CircularBuffer_GetCapacity(const CircularBuffer cb)
 {
     return cb->capacity;
 }
 
-Bool CircularBuffer_IsEmpty(CircularBuffer cb)
+Bool CircularBuffer_IsEmpty(const CircularBuffer cb)
 {
     return isBufferEmpty(cb);
 }
@@ -122,6 +126,7 @@ void CircularBuffer_Destroy(CircularBuffer cb)
 {
     if(cb != NULL)
     {
+        free(cb->element);
         *cb = resetStruct;
         free(cb);
     }

@@ -11,15 +11,13 @@
 
 typedef enum { FALSE = 0, TRUE = 1 } Bool;
 
-enum { MAX_CAPACITY = 10 };
-
 typedef struct CircularBufferStruct * CircularBuffer;
 
 // Multiple instance API: new-style
 CircularBuffer CircularBuffer_Create(int capacity);
-int CircularBuffer_GetSize(CircularBuffer cb);
-int CircularBuffer_GetCapacity(CircularBuffer cb);
-Bool CircularBuffer_IsEmpty(CircularBuffer cb);
+int CircularBuffer_GetSize(const CircularBuffer cb);
+int CircularBuffer_GetCapacity(const CircularBuffer cb);
+Bool CircularBuffer_IsEmpty(const CircularBuffer cb);
 Bool CircularBuffer_Push(CircularBuffer cb, const int value);
 Bool CircularBuffer_Pop(CircularBuffer cb, int * const value);
 void CircularBuffer_Destroy(CircularBuffer cb);
