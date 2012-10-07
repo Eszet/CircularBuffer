@@ -15,7 +15,7 @@ extern "C" {
 
 TEST_GROUP(CircularBuffer0)
 {
-    CircularBuffer cb = 0;
+    CircularBuffer * cb = 0;
     
     void setup(void)
     {
@@ -54,7 +54,7 @@ TEST(CircularBuffer0, PopAlwaysFails)
 
 TEST_GROUP(CircularBuffer1)
 {
-    CircularBuffer cb = 0;
+    CircularBuffer * cb = 0;
     int value, discard;
 
     void setup(void)
@@ -134,14 +134,14 @@ TEST(CircularBuffer1, NoOperationOnInvalidRef)
 
 TEST_GROUP(CircularBufferN)
 {
-    CircularBuffer cb = 0;
+    CircularBuffer * cb = 0;
     const int capacity = 5;
 
     int value, discard;
     
     enum fifoState { HALF_FULL, FULL, OVER_FULL, HALF_EMPTY, EMPTY, OVER_EMPTY };
 
-    int makeFifo(CircularBuffer cb, const fifoState state, const int offset = 888)
+    int makeFifo(CircularBuffer * cb, const fifoState state, const int offset = 888)
     {
         int count, targetSize;
 
@@ -257,7 +257,7 @@ TEST(CircularBufferN, OnlyZeroSizedBufferIsEmpty)
 
 TEST(CircularBufferN, MultipleInstances)
 {
-    CircularBuffer another = CircularBuffer_Create(4);
+    CircularBuffer * another = CircularBuffer_Create(4);
 
     makeFifo(another, FULL, 222);
     makeFifo(cb, FULL, 111);
@@ -290,7 +290,7 @@ TEST(CircularBufferN, PipeDataThrough)
 
 TEST_GROUP(CircularBufferInvariant)
 {
-    CircularBuffer cb = 0;
+    CircularBuffer * cb = 0;
     
     void tearDown(void)
     {

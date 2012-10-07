@@ -22,34 +22,34 @@ struct CircularBufferStruct {
 static const struct CircularBufferStruct resetStruct;
 
 
-static bool isBufferEmpty(const CircularBuffer cb)
+static bool isBufferEmpty(const CircularBuffer * const cb)
 {
     return (cb->size == 0);
 }
 
-static bool isBufferFull(const CircularBuffer cb)
+static bool isBufferFull(const CircularBuffer * const cb)
 {
     return (cb->size == cb->capacity);
 }
 
-static void setInElement(CircularBuffer cb, const int value)
+static void setInElement(CircularBuffer * const cb, const int value)
 {
     cb->element[cb->inPointer] = value;
 }
 
-static int getOutElement(CircularBuffer cb)
+static int getOutElement(const CircularBuffer * const cb)
 {
     return cb->element[cb->outPointer];
 }
 
-static void advanceInPointer(CircularBuffer cb)
+static void advanceInPointer(CircularBuffer * const cb)
 {
     cb->inPointer++;
     cb->inPointer %= cb->capacity;
     cb->size++;
 }
 
-static void advanceOutPointer(CircularBuffer cb)
+static void advanceOutPointer(CircularBuffer * const cb)
 {
     cb->outPointer++;
     cb->outPointer %= cb->capacity;
@@ -57,9 +57,9 @@ static void advanceOutPointer(CircularBuffer cb)
 }
 
 
-CircularBuffer CircularBuffer_Create(const int capacity)
+CircularBuffer * CircularBuffer_Create(const int capacity)
 {
-    CircularBuffer cb = NULL;
+    struct CircularBufferStruct * cb = NULL;
 
     if(capacity < 0)
         return NULL;
@@ -84,22 +84,22 @@ CircularBuffer CircularBuffer_Create(const int capacity)
     return cb;
 }
 
-int CircularBuffer_GetSize(const CircularBuffer cb)
+int CircularBuffer_GetSize(const CircularBuffer * const cb)
 {
     return cb->size;
 }
 
-int CircularBuffer_GetCapacity(const CircularBuffer cb)
+int CircularBuffer_GetCapacity(const CircularBuffer * const cb)
 {
     return cb->capacity;
 }
 
-bool CircularBuffer_IsEmpty(const CircularBuffer cb)
+bool CircularBuffer_IsEmpty(const CircularBuffer * const cb)
 {
     return isBufferEmpty(cb);
 }
 
-bool CircularBuffer_Push(CircularBuffer cb, const int value)
+bool CircularBuffer_Push(CircularBuffer * const cb, const int value)
 {
     if(isBufferFull(cb))
         return false;
@@ -109,7 +109,7 @@ bool CircularBuffer_Push(CircularBuffer cb, const int value)
     return true;
 }
 
-bool CircularBuffer_Pop(CircularBuffer cb, int * const value)
+bool CircularBuffer_Pop(CircularBuffer * const cb, int * const value)
 {
     if(value == NULL)
         return false;
@@ -122,7 +122,7 @@ bool CircularBuffer_Pop(CircularBuffer cb, int * const value)
     return true;
 }
 
-void CircularBuffer_Destroy(CircularBuffer cb)
+void CircularBuffer_Destroy(CircularBuffer * const cb)
 {
     if(cb != NULL)
     {
