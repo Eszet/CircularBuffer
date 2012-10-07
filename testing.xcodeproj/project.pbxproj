@@ -13,6 +13,8 @@
 		365B86A7160DAB680072EB16 /* test1.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 365B86A6160DAB680072EB16 /* test1.cpp */; };
 		36EF529B16138F5E00702A77 /* LedDriver.c in Sources */ = {isa = PBXBuildFile; fileRef = 36EF529A16138F5E00702A77 /* LedDriver.c */; };
 		36EF529F16139DEA00702A77 /* RuntimeErrorStub.c in Sources */ = {isa = PBXBuildFile; fileRef = 36EF529E16139DEA00702A77 /* RuntimeErrorStub.c */; };
+		36EF52A51616282000702A77 /* test2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 36EF52A41616282000702A77 /* test2.cpp */; };
+		36EF52A8161638E600702A77 /* CircularBuffer.c in Sources */ = {isa = PBXBuildFile; fileRef = 36EF52A7161638E600702A77 /* CircularBuffer.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -29,6 +31,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		36496597161AD70A00C34F3F /* report.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = report.txt; sourceTree = "<group>"; };
 		365B8697160DA6410072EB16 /* testing */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = testing; sourceTree = BUILT_PRODUCTS_DIR; };
 		365B869B160DA6410072EB16 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		365B869D160DA6410072EB16 /* testing.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = testing.1; sourceTree = "<group>"; };
@@ -40,6 +43,9 @@
 		36EF529E16139DEA00702A77 /* RuntimeErrorStub.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = RuntimeErrorStub.c; sourceTree = "<group>"; };
 		36EF52A21613A1C800702A77 /* RuntimeError.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RuntimeError.h; sourceTree = "<group>"; };
 		36EF52A31613AF9000702A77 /* LedDriverSpy.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LedDriverSpy.h; sourceTree = "<group>"; };
+		36EF52A41616282000702A77 /* test2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = test2.cpp; sourceTree = "<group>"; };
+		36EF52A61616291C00702A77 /* CircularBuffer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CircularBuffer.h; sourceTree = "<group>"; };
+		36EF52A7161638E600702A77 /* CircularBuffer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = CircularBuffer.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,6 +63,7 @@
 		365B868C160DA6410072EB16 = {
 			isa = PBXGroup;
 			children = (
+				36496597161AD70A00C34F3F /* report.txt */,
 				36EF52A01613A1B300702A77 /* include */,
 				36EF529C16139D8300702A77 /* mocks */,
 				365B86A4160DA6AE0072EB16 /* libCppUTest.a */,
@@ -81,6 +88,9 @@
 				365B86A6160DAB680072EB16 /* test1.cpp */,
 				36EF529816138DB600702A77 /* LedDriver.h */,
 				36EF529A16138F5E00702A77 /* LedDriver.c */,
+				36EF52A41616282000702A77 /* test2.cpp */,
+				36EF52A61616291C00702A77 /* CircularBuffer.h */,
+				36EF52A7161638E600702A77 /* CircularBuffer.c */,
 			);
 			path = testing;
 			sourceTree = "<group>";
@@ -166,6 +176,8 @@
 				365B86A7160DAB680072EB16 /* test1.cpp in Sources */,
 				36EF529B16138F5E00702A77 /* LedDriver.c in Sources */,
 				36EF529F16139DEA00702A77 /* RuntimeErrorStub.c in Sources */,
+				36EF52A51616282000702A77 /* test2.cpp in Sources */,
+				36EF52A8161638E600702A77 /* CircularBuffer.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -238,7 +250,7 @@
 					"\"$(SRCROOT)\"",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				RUN_CLANG_STATIC_ANALYZER = YES;
+				RUN_CLANG_STATIC_ANALYZER = NO;
 			};
 			name = Debug;
 		};
@@ -253,7 +265,7 @@
 					"\"$(SRCROOT)\"",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				RUN_CLANG_STATIC_ANALYZER = YES;
+				RUN_CLANG_STATIC_ANALYZER = NO;
 			};
 			name = Release;
 		};

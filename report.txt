@@ -1,0 +1,43 @@
+IGNORE_TEST(CircularBufferInvariant, ApiIsSafeAgainstNull) - 0 ms
+TEST(CircularBufferInvariant, PositiveCapacityOk) - 0 ms
+TEST(CircularBufferInvariant, NegativeCapacityFail) - 0 ms
+TEST(CircularBufferN, PipeDataThrough) - 0 ms
+TEST(CircularBufferN, MultipleInstances) - 0 ms
+TEST(CircularBufferN, OnlyZeroSizedBufferIsEmpty) - 0 ms
+TEST(CircularBufferN, FailedPopDoesNotCorruptValue) - 0 ms
+TEST(CircularBufferN, PushAndPopTwoCorrectValues) - 0 ms
+TEST(CircularBufferN, PopOnEmptyBufferDoesNotAffectSize) - 0 ms
+TEST(CircularBufferN, ExceedCapacityFail) - 0 ms
+TEST(CircularBuffer1, NoOperationOnInvalidRef) - 0 ms
+TEST(CircularBuffer1, PopTwoElements) - 0 ms
+TEST(CircularBuffer1, PushAndPopElementCorrect) - 0 ms
+TEST(CircularBuffer1, PopOnFullBufferOk) - 0 ms
+TEST(CircularBuffer1, PopOnEmptyBufferFails) - 0 ms
+TEST(CircularBuffer1, PushTwoElements) - 0 ms
+TEST(CircularBuffer1, PushOneElement) - 0 ms
+TEST(CircularBuffer1, NewBufferIsEmptyCapacity) - 0 ms
+TEST(CircularBuffer0, PopAlwaysFails) - 0 ms
+TEST(CircularBuffer0, PushAlwaysFails) - 0 ms
+TEST(CircularBuffer0, ZeroCapacity) - 0 ms
+TEST(CircularBuffer0, AlwaysEmpty) - 0 ms
+TEST(LedDriver, DriverNotInitializedInvalidHardwareLocation) - 0 ms
+TEST(LedDriver, NoUpdateHardwareOnOutOfBounds) - 0 ms
+TEST(LedDriver, OutOfBoundsLedsAreAlwaysOff) - 0 ms
+TEST(LedDriver, IsOff) - 0 ms
+TEST(LedDriver, IsOn) - 0 ms
+TEST(LedDriver, OutOfBoundsProducesRuntimeError) - 0 ms
+TEST(LedDriver, TurnOffOutOfBoundsDoesNoHarm) - 0 ms
+TEST(LedDriver, TurnOnOutOfBoundsDoesNoHarm) - 0 ms
+TEST(LedDriver, UpperAndLowerBounds) - 0 ms
+TEST(LedDriver, LedMemoryNotReadable) - 0 ms
+TEST(LedDriver, TurnAllOff) - 0 ms
+TEST(LedDriver, TurnAllOn) - 0 ms
+TEST(LedDriver, TurnOnOffSameLedMultipleTimes) - 0 ms
+TEST(LedDriver, TurnOffAnyLed) - 0 ms
+TEST(LedDriver, TurnOnMultipleLeds) - 0 ms
+TEST(LedDriver, TurnOffLedOne) - 0 ms
+TEST(LedDriver, TurnOnLedOne) - 0 ms
+TEST(LedDriver, AllOffAfterCreate) - 0 ms
+
+OK (40 tests, 39 ran, 269 checks, 1 ignored, 0 filtered out, 1 ms)
+
