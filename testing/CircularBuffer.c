@@ -11,8 +11,6 @@
 #include <stdlib.h>
 #include <assert.h>
 
-//#include <MemoryLeakDetectorMallocMacros.h>
-
 struct CircularBufferStruct {
     int capacity;
     int size;
@@ -24,12 +22,12 @@ struct CircularBufferStruct {
 static const struct CircularBufferStruct resetStruct;
 
 
-static Bool isBufferEmpty(const CircularBuffer cb)
+static bool isBufferEmpty(const CircularBuffer cb)
 {
     return (cb->size == 0);
 }
 
-static Bool isBufferFull(const CircularBuffer cb)
+static bool isBufferFull(const CircularBuffer cb)
 {
     return (cb->size == cb->capacity);
 }
@@ -59,28 +57,30 @@ static void advanceOutPointer(CircularBuffer cb)
 }
 
 
-CircularBuffer CircularBuffer_Create(int capacity)
+CircularBuffer CircularBuffer_Create(const int capacity)
 {
     CircularBuffer cb = NULL;
 
     if(capacity < 0)
         return NULL;
-    
+
     cb = malloc(sizeof(struct CircularBufferStruct));
-    
+
     if(cb != NULL)
     {
+        const size_t elementSize = sizeof(*cb->element);
+
         *cb = resetStruct;
-        cb->element = malloc(sizeof(*cb->element) * capacity);
+        cb->element = malloc(elementSize * capacity);
         cb->capacity = capacity;
-        
+
         if(cb->element == NULL)
         {
             CircularBuffer_Destroy(cb);
             cb = NULL;
         }
     }
-        
+
     return cb;
 }
 
@@ -94,32 +94,32 @@ int CircularBuffer_GetCapacity(const CircularBuffer cb)
     return cb->capacity;
 }
 
-Bool CircularBuffer_IsEmpty(const CircularBuffer cb)
+bool CircularBuffer_IsEmpty(const CircularBuffer cb)
 {
     return isBufferEmpty(cb);
 }
 
-Bool CircularBuffer_Push(CircularBuffer cb, const int value)
+bool CircularBuffer_Push(CircularBuffer cb, const int value)
 {
     if(isBufferFull(cb))
-        return FALSE;
-    
+        return false;
+
     setInElement(cb, value);
     advanceInPointer(cb);
-    return TRUE;
+    return true;
 }
 
-Bool CircularBuffer_Pop(CircularBuffer cb, int * const value)
+bool CircularBuffer_Pop(CircularBuffer cb, int * const value)
 {
     if(value == NULL)
-        return FALSE;
-    
+        return false;
+
     if(isBufferEmpty(cb))
-        return FALSE;
-    
+        return false;
+
     *value = getOutElement(cb);
     advanceOutPointer(cb);
-    return TRUE;
+    return true;
 }
 
 void CircularBuffer_Destroy(CircularBuffer cb)

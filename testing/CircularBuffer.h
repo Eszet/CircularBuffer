@@ -9,17 +9,18 @@
 #ifndef testing_CircularBuffer_h
 #define testing_CircularBuffer_h
 
-typedef enum { FALSE = 0, TRUE = 1 } Bool;
+#include <stdbool.h>
 
+// First-in, first-out buffer handle
 typedef struct CircularBufferStruct * CircularBuffer;
 
-// Multiple instance API: new-style
-CircularBuffer CircularBuffer_Create(int capacity);
+// Multiple-instance API
+CircularBuffer CircularBuffer_Create(const int capacity);
 int CircularBuffer_GetSize(const CircularBuffer cb);
 int CircularBuffer_GetCapacity(const CircularBuffer cb);
-Bool CircularBuffer_IsEmpty(const CircularBuffer cb);
-Bool CircularBuffer_Push(CircularBuffer cb, const int value);
-Bool CircularBuffer_Pop(CircularBuffer cb, int * const value);
-void CircularBuffer_Destroy(CircularBuffer cb);
+bool CircularBuffer_IsEmpty(const CircularBuffer cb);
+bool CircularBuffer_Push(CircularBuffer cb, const int value);
+bool CircularBuffer_Pop(CircularBuffer cb, int * const value);
+void CircularBuffer_Destroy(const CircularBuffer const cb);
 
 #endif

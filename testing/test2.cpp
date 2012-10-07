@@ -92,7 +92,7 @@ TEST(CircularBuffer1, PopOnEmptyBufferFails)
     CHECK_FALSE(CircularBuffer_Pop(cb, &value));
 }
 
-TEST(CircularBuffer1, PopOnFilledBufferOk)
+TEST(CircularBuffer1, PopOnFullBufferOk)
 {
     CHECK_TRUE(CircularBuffer_Push(cb, 0));
     CHECK_TRUE(CircularBuffer_Pop(cb, &value));
