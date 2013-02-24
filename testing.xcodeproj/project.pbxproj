@@ -10,9 +10,6 @@
 		365B869C160DA6410072EB16 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 365B869B160DA6410072EB16 /* main.cpp */; };
 		365B869E160DA6410072EB16 /* testing.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = 365B869D160DA6410072EB16 /* testing.1 */; };
 		365B86A5160DA6AE0072EB16 /* libCppUTest.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 365B86A4160DA6AE0072EB16 /* libCppUTest.a */; };
-		365B86A7160DAB680072EB16 /* test1.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 365B86A6160DAB680072EB16 /* test1.cpp */; };
-		36EF529B16138F5E00702A77 /* LedDriver.c in Sources */ = {isa = PBXBuildFile; fileRef = 36EF529A16138F5E00702A77 /* LedDriver.c */; };
-		36EF529F16139DEA00702A77 /* RuntimeErrorStub.c in Sources */ = {isa = PBXBuildFile; fileRef = 36EF529E16139DEA00702A77 /* RuntimeErrorStub.c */; };
 		36EF52A51616282000702A77 /* test2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 36EF52A41616282000702A77 /* test2.cpp */; };
 		36EF52A8161638E600702A77 /* CircularBuffer.c in Sources */ = {isa = PBXBuildFile; fileRef = 36EF52A7161638E600702A77 /* CircularBuffer.c */; };
 /* End PBXBuildFile section */
@@ -36,13 +33,6 @@
 		365B869B160DA6410072EB16 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		365B869D160DA6410072EB16 /* testing.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = testing.1; sourceTree = "<group>"; };
 		365B86A4160DA6AE0072EB16 /* libCppUTest.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libCppUTest.a; sourceTree = "<group>"; };
-		365B86A6160DAB680072EB16 /* test1.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = test1.cpp; sourceTree = "<group>"; };
-		36EF529816138DB600702A77 /* LedDriver.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LedDriver.h; sourceTree = "<group>"; };
-		36EF529A16138F5E00702A77 /* LedDriver.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = LedDriver.c; sourceTree = "<group>"; };
-		36EF529D16139DAD00702A77 /* RuntimeErrorStub.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RuntimeErrorStub.h; sourceTree = "<group>"; };
-		36EF529E16139DEA00702A77 /* RuntimeErrorStub.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = RuntimeErrorStub.c; sourceTree = "<group>"; };
-		36EF52A21613A1C800702A77 /* RuntimeError.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RuntimeError.h; sourceTree = "<group>"; };
-		36EF52A31613AF9000702A77 /* LedDriverSpy.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LedDriverSpy.h; sourceTree = "<group>"; };
 		36EF52A41616282000702A77 /* test2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = test2.cpp; sourceTree = "<group>"; };
 		36EF52A61616291C00702A77 /* CircularBuffer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CircularBuffer.h; sourceTree = "<group>"; };
 		36EF52A7161638E600702A77 /* CircularBuffer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = CircularBuffer.c; sourceTree = "<group>"; };
@@ -65,7 +55,6 @@
 			children = (
 				36496597161AD70A00C34F3F /* report.txt */,
 				36EF52A01613A1B300702A77 /* include */,
-				36EF529C16139D8300702A77 /* mocks */,
 				365B86A4160DA6AE0072EB16 /* libCppUTest.a */,
 				365B869A160DA6410072EB16 /* testing */,
 				365B8698160DA6410072EB16 /* Products */,
@@ -85,9 +74,6 @@
 			children = (
 				365B869B160DA6410072EB16 /* main.cpp */,
 				365B869D160DA6410072EB16 /* testing.1 */,
-				365B86A6160DAB680072EB16 /* test1.cpp */,
-				36EF529816138DB600702A77 /* LedDriver.h */,
-				36EF529A16138F5E00702A77 /* LedDriver.c */,
 				36EF52A41616282000702A77 /* test2.cpp */,
 				36EF52A61616291C00702A77 /* CircularBuffer.h */,
 				36EF52A7161638E600702A77 /* CircularBuffer.c */,
@@ -95,30 +81,11 @@
 			path = testing;
 			sourceTree = "<group>";
 		};
-		36EF529C16139D8300702A77 /* mocks */ = {
-			isa = PBXGroup;
-			children = (
-				36EF529D16139DAD00702A77 /* RuntimeErrorStub.h */,
-				36EF529E16139DEA00702A77 /* RuntimeErrorStub.c */,
-				36EF52A31613AF9000702A77 /* LedDriverSpy.h */,
-			);
-			name = mocks;
-			sourceTree = "<group>";
-		};
 		36EF52A01613A1B300702A77 /* include */ = {
 			isa = PBXGroup;
 			children = (
-				36EF52A11613A1BB00702A77 /* util */,
 			);
 			name = include;
-			sourceTree = "<group>";
-		};
-		36EF52A11613A1BB00702A77 /* util */ = {
-			isa = PBXGroup;
-			children = (
-				36EF52A21613A1C800702A77 /* RuntimeError.h */,
-			);
-			name = util;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -173,9 +140,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				365B869C160DA6410072EB16 /* main.cpp in Sources */,
-				365B86A7160DAB680072EB16 /* test1.cpp in Sources */,
-				36EF529B16138F5E00702A77 /* LedDriver.c in Sources */,
-				36EF529F16139DEA00702A77 /* RuntimeErrorStub.c in Sources */,
 				36EF52A51616282000702A77 /* test2.cpp in Sources */,
 				36EF52A8161638E600702A77 /* CircularBuffer.c in Sources */,
 			);
